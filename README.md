@@ -123,6 +123,115 @@ CMD ["python", "project/main.py"]
 - **Base for web scraping**: Selenium already has Chrome
 - **Base for audio AI**: TTS, STT with PulseAudio
 - **Base for vision tasks**: Add OpenCV, PIL
+- **Base for AI music generation**: Perfect for YuE and similar models
+
+---
+
+## Example Project: YuE AI Music Generation
+
+This base image is ideal for running **YuE**, an open-source AI music generation model that creates full songs with lyrics, vocals, and instrumentals.
+
+### About YuE
+
+**YuE (乐)** is a groundbreaking open-source foundation model for music generation (similar to Suno.ai but open). It transforms lyrics into complete songs with vocals and accompaniment.
+
+### Available YuE Resources
+
+**🔥 Official Repository (Most Up-to-Date)**
+- **Repository**: [multimodal-art-projection/YuE](https://github.com/multimodal-art-projection/YuE)
+- **Latest Update**: June 2025 - Added LoRA finetuning support
+- **Features**: Latest models, inference scripts, prompt engineering guide
+- **Paper**: [YuE Technical Report (arXiv)](https://arxiv.org/abs/2503.08638)
+- **Demo**: [Official Demo Page](https://map-yue.github.io/)
+- **License**: Apache 2.0
+
+**🎛️ YuE Interfaces & Tools**
+
+1. **YuE-Interface** (Docker + Gradio)
+   - Repository: [alisson-anjos/YuE-Interface](https://github.com/alisson-anjos/YuE-Interface)
+   - Docker-based web UI with Gradio
+   - Easy model management and batch generation
+   - Last updated: April 2025
+
+2. **YuE-UI** (Advanced Interface)
+   - Repository: [joeljuvel/YuE-UI](https://github.com/joeljuvel/YuE-UI)
+   - Supports incremental song generation
+   - Interactive timeline, session save/load
+   - Optimized for 8GB VRAM with quantized models
+
+3. **YuE-exllamav2-UI** (Faster Inference)
+   - Repository: [WrongProtocol/YuE-exllamav2-UI](https://github.com/WrongProtocol/YuE-exllamav2-UI)
+   - Optimized inference using exllamav2
+   - Faster generation with slight quality trade-off
+
+4. **YuE-extend** (Music Continuation)
+   - Repository: [Mozer/YuE-extend](https://github.com/Mozer/YuE-extend)
+   - Supports music continuation
+   - Google Colab support
+
+5. **YuEGP** (Memory-Optimized)
+   - Repository: [deepbeepmeep/YuEGP](https://github.com/deepbeepmeep/YuEGP)
+   - Memory management for limited GPU resources
+   - Better for GPUs with <24GB VRAM
+
+### Using YuE with This Base Image
+
+This CUDA base image provides the perfect foundation for YuE:
+- ✅ CUDA 13.0.1 runtime
+- ✅ Python 3.12 with venv
+- ✅ PulseAudio for audio processing
+- ✅ Ubuntu 24.04 LTS
+
+**Example Dockerfile extending this base for YuE:**
+
+```dockerfile
+FROM schnicklbob/cuda-desktop-base:latest
+
+USER admin
+WORKDIR /home/admin
+
+# Install YuE dependencies
+RUN pip install torch torchvision torchaudio \
+    && pip install transformers accelerate \
+    && pip install gradio \
+    && pip install flash-attn --no-build-isolation
+
+# Clone YuE repository
+RUN git clone https://github.com/multimodal-art-projection/YuE.git \
+    && cd YuE/inference/ \
+    && git clone https://huggingface.co/m-a-p/xcodec_mini_infer
+
+WORKDIR /home/admin/YuE
+
+CMD ["bash"]
+```
+
+### GPU Requirements
+
+- **Minimum**: RTX 3090 (24GB) for 2 sessions
+- **Recommended**: H100/A100 (80GB) for full songs
+- **Budget**: 8GB VRAM possible with quantized models (INT8/NF4)
+
+### Key Features
+
+- **Full song generation**: Creates complete songs with vocals and instruments
+- **Multi-language support**: English, Chinese, Japanese, Korean
+- **Style transfer**: ICL mode for voice cloning and music style transfer
+- **Chain-of-Thought (CoT)**: Enhanced reasoning for better generation
+- **In-Context Learning (ICL)**: Reference audio for style matching
+- **LoRA finetuning**: Customize models for specific styles (added June 2025)
+
+### Recommended Workflow
+
+1. **For latest features**: Use the [official YuE repository](https://github.com/multimodal-art-projection/YuE)
+2. **For easy Docker setup**: Use [YuE-Interface by alisson-anjos](https://github.com/alisson-anjos/YuE-Interface)
+3. **For incremental generation**: Use [YuE-UI by joeljuvel](https://github.com/joeljuvel/YuE-UI)
+4. **For limited VRAM**: Use quantized models with [YuEGP](https://github.com/deepbeepmeep/YuEGP)
+
+### Community
+
+- **Discord**: [Join the YuE community](https://discord.gg/ssAyWMnMzu)
+- **Models**: Available on [Hugging Face](https://huggingface.co/m-a-p)
 
 ---
 
